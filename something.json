@@ -1,0 +1,47 @@
+{
+    "build": [
+        {
+            "_id": "6236f50f3282f6a2c259c7a8",
+            "name": "Typical AMD mid-range build with Ryzen 5600x",
+            "build_ease": 4.5,
+            "image": "https://cdna.pcpartpicker.com/static/forever/images/userbuild/389450.39c7038c5df5eda89d0abc0943729880.1600.jpg",
+            "price": 1500,
+            "description": "Case is not very great the RGB fan is very makes and annoying sound going to get a different case when I can. I plan to get an AIO and a 5900X later if I find the 5600X is not enough. Went with the motherboard for the flashback and bluetooth and not needing other RGB software I'm used to armoury crate from my laptop. temps taken after 30min of load. 95°C(limit) 4.16GHz with Precision Boost overdrive",
+            "date": "'2021-01-26T13:51:50.417-07:00'",
+            "votes": 5,
+            "cpu_brand": "AMD",
+            "parts": {
+                "cpu_id": "623731bbc17201a4be27c70a",
+                "gpu_id": "6236ef613282f6a2c259c7a4",
+                "mobo_id": "6236ef613282f6a2c259c7a5",
+                "ram_id": "6236ef613282f6a2c259c7b1"
+            }
+        }
+    ],
+    "build-comments": [
+        {
+            "_id": "62393ad7f9a41c57ee2de6f1",
+            "name": "tommy",
+            "comment": "i love this",
+            "build_id": "6236f50f3282f6a2c259c7a8"
+        },
+        {
+            "_id": "62393b62f9a41c57ee2de6f5",
+            "name": "adam",
+            "comment": "not too good",
+            "build_id": "6236f50f3282f6a2c259c7a8"
+        }
+    ],
+    "build-cpu": [
+        {
+            "_id": "62373053c17201a4be27c708",
+            "product_name": "INTEL CORE I5-12600K",
+            "brand": "INTEL",
+            "clock_speed": "3.7",
+            "price": {
+                "$numberDecimal": "289"
+            },
+            "image": "https://c1.neweggimages.com/ProductImageCompressAll1280/19-118-347-05.jpg"
+        }
+    ]
+}
