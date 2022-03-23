@@ -3,7 +3,7 @@ const cors = require('cors');
 require('dotenv').config();
 const ObjectId = require('mongodb').ObjectId;
 const MongoUtil = require('./MongoUtil');
-const { default: axios } = require('axios');
+
 
 // SETUP
 const app = express();
@@ -349,6 +349,6 @@ async function main(){
 main();
 
 //LISTENT
-app.listen(3000, function(){
+app.listen(process.env.PORT, function(){
     console.log("Server has started")
 })
