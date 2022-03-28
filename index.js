@@ -34,12 +34,26 @@ async function main(){
         const db = MongoUtil.getDB();
         let mainList = await db.collection(BUILD_COLLECTION).find({
         }).project({
-            'name': 1,
-            'image': 1,
-            'vote' : 1,
+            'name':1,
+            'image':1,
+            'vote':1,
+            'cpu_brand':1,
+            'gpu_brand':1,
+            'price':1,
+            'parts':1
         }).toArray();
+        //get cpu details
+        let cpuItem = await db.collection(CPU_COLLECTION).find({
+            '_id': mainList[0].parts.cpu_id
+        }).toArray();
+        //get gpu details
+        let gpuItem = await db.collection(GPU_COLLECTION).find({
+            '_id': mainList[0].parts.gpu_id
+        })
         res.send({
-             "all-build":mainList
+             mainList,
+             cpuItem,
+             gpuItem
         })
     })
     //====================BUILD: FILTER (BRAND, PRICE) MAIN LOAD==========================//
@@ -60,7 +74,9 @@ async function main(){
 
         }).toArray()
       
-        res.send(mainList)
+        res.send({
+            mainList
+        })
     })
 
     // axios.get("http://ldkndkfn"+ "/main/brand/ " +this.state.searchBrand)
@@ -73,16 +89,17 @@ async function main(){
         let mainList = await db.collection(BUILD_COLLECTION).find({
             '_id': ObjectId(req.params.id)
         }).project({
-            '_id' : 1,
-            'name' : 1,
-            'build_ease' : 1,
-            'image' : 1,
-            'price' : 1,
-            'description' : 1,
-            'datetime' : 1,
-            'votes' : 1,
-            'cpu_brand' : 1,
-            'parts' : 1,
+            '_id':1,
+            'name':1,
+            'build_ease':1,
+            'image':1,
+            'price':1,
+            'description':1,
+            'datetime':1,
+            'votes':1,
+            'cpu_brand':1,
+            'gpu_brand':1,
+            'parts':1,
 
         }).toArray();
         //get comments of listing
@@ -107,12 +124,12 @@ async function main(){
         }).toArray();
 
         res.send({
-            "build" : mainList,
-            "build-comments" : commentList,
-            "build-cpu" : cpuItem,
-            "build-gpu" : gpuItem,
-            "build-mobo" : moboItem,
-            "build-ram" : ramItem
+            mainList,
+            commentList,
+            cpuItem,
+            gpuItem,
+            moboItem,
+            ramItem
         })
     })
     //====================BUILD: INDIVIDUAL PAGE COMMENTS SEND==========================//
@@ -310,10 +327,10 @@ async function main(){
         }).toArray();
 
         res.send({
-             "cpu" : cpuItem,
-             "gpu" : gpuItem,
-             "mobo" : moboItem,
-             "ram" : ramItem,
+             cpuItem,
+             gpuItem,
+             moboItem,
+             ramItem,
         })
     })
     //====================BUILD: NEW LISTING PART AND FORM SEND==========================//
@@ -394,7 +411,7 @@ async function main(){
         const db = MongoUtil.getDB();
         let cpuRead = await db.collection(CPU_COLLECTION).find().toArray();
         res.send({
-             "cpu":cpuRead
+            cpuRead
         })
     })
     //====================PARTS: GPU==========================//
@@ -403,7 +420,7 @@ async function main(){
         const db = MongoUtil.getDB();
         let gpuRead = await db.collection(GPU_COLLECTION).find().toArray();
         res.send({
-            "gpu" : gpuRead
+            gpuRead
         })
     })
     //====================PARTS: MOBO==========================//
@@ -412,7 +429,7 @@ async function main(){
         const db = MongoUtil.getDB();
         let moboRead = await db.collection(MOBO_COLLECTION).find().toArray();
         res.send({
-            "mobo" : moboRead
+            moboRead
         })
     })
     //====================PARTS: RAM==========================//
@@ -421,7 +438,7 @@ async function main(){
         const db = MongoUtil.getDB();
         let ramRead = await db.collection(RAM_COLLECTION).find().toArray();
         res.send({
-            "ram" : ramRead
+            ramRead
         })
     })
 }
