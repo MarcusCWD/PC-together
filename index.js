@@ -44,12 +44,10 @@ async function main(){
         }).toArray();
         //get cpu details
         let cpuItem = await db.collection(CPU_COLLECTION).find({
-            '_id': mainList[0].parts.cpu_id
         }).toArray();
         //get gpu details
         let gpuItem = await db.collection(GPU_COLLECTION).find({
-            '_id': mainList[0].parts.gpu_id
-        })
+        }).toArray();
         res.send({
              mainList,
              cpuItem,
