@@ -36,7 +36,8 @@ async function main(){
         }).project({
             'name':1,
             'image':1,
-            'vote':1,
+            'votes':1,
+            'build_ease':1,
             'cpu_brand':1,
             'gpu_brand':1,
             'price':1,
