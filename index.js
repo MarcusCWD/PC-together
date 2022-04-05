@@ -58,38 +58,133 @@ async function main() {
   });
   //====================BUILD: FILTER (BRAND, PRICE) MAIN LOAD==========================//
   //READ
-  app.get("/build/search", async function (req, res) {
-    // console.log(req.query.priceUpper, req.query.priceLower)
-    // console.log("the name in query is ", req.query.cpu_brand_name )
+  app.get("/filter", async function (req, res) {
     const db = MongoUtil.getDB();
     let criteria = {};
-    // if cpu have and gpu nothing
+    // if cpu have and gpu nothing and price nothing
     if (req.query.cpu_brand_name) {
-        criteria = {
-            cpu_brand: {
-              $in: req.query.cpu_brand_name
-            }
-        }
-    }    
-    // if gpu have and cpu nothing
-    if (req.query.gpu_brand_name) {
-        criteria = {
-            gpu_brand: {
-                $in: req.query.gpu_brand_name
-            }
-        }
-    }    
-    // if gpu have and cpu have
-    if (req.query.gpu_brand_name && req.query.cpu_brand_name) {
-        criteria = {
-            gpu_brand: {
-                $in: req.query.gpu_brand_name
-            },
-            cpu_brand: {
-                $in: req.query.cpu_brand_name
-            }
-        }
+      criteria = {
+        cpu_brand: {
+          $in: req.query.cpu_brand_name,
+        },
+      };
     }
+    // if gpu have and cpu nothing and price nothing
+    if (req.query.gpu_brand_name) {
+      criteria = {
+        gpu_brand: {
+          $in: req.query.gpu_brand_name,
+        },
+      };
+    }
+    // if gpu have and cpu have and price nothing
+    if (req.query.gpu_brand_name && req.query.cpu_brand_name) {
+      criteria = {
+        gpu_brand: {
+          $in: req.query.gpu_brand_name,
+        },
+        cpu_brand: {
+          $in: req.query.cpu_brand_name,
+        },
+      };
+    }
+    // if price have cpu nothing gpu nothing
+    if (req.query.price_search) {
+      if (parseInt(req.query.price_search) === 2000) {
+        criteria = {
+          price: {
+            $gte: parseInt(req.query.price_search),
+          },
+        };
+      } else {
+        criteria = {
+          price: {
+            $gte: parseInt(req.query.price_search),
+            $lt: parseInt(req.query.price_search) + 499,
+          },
+        };
+      }
+    }
+    // if price have cpu have gpu nothing
+    if (req.query.price_search && req.query.cpu_brand_name) {
+      if (parseInt(req.query.price_search) === 2000) {
+        criteria = {
+          price: {
+            $gte: parseInt(req.query.price_search),
+          },
+          cpu_brand: {
+            $in: req.query.cpu_brand_name,
+          },
+        };
+      } else {
+        criteria = {
+          price: {
+            $gte: parseInt(req.query.price_search),
+            $lt: parseInt(req.query.price_search) + 499,
+          },
+          cpu_brand: {
+            $in: req.query.cpu_brand_name,
+          },
+        };
+      }
+    }
+    // if price have cpu nothing gpu have
+    if (req.query.price_search && req.query.gpu_brand_name) {
+      if (parseInt(req.query.price_search) === 2000) {
+        criteria = {
+          price: {
+            $gte: parseInt(req.query.price_search),
+          },
+          gpu_brand: {
+            $in: req.query.gpu_brand_name,
+          },
+        };
+      } else {
+        criteria = {
+          price: {
+            $gte: parseInt(req.query.price_search),
+            $lt: parseInt(req.query.price_search) + 499,
+          },
+          gpu_brand: {
+            $in: req.query.gpu_brand_name,
+          },
+        };
+      }
+    }
+    // if price have cpu have gpu have
+    if (
+      req.query.price_search &&
+      req.query.cpu_brand_name &&
+      req.query.gpu_brand_name
+    ) {
+      if (parseInt(req.query.price_search) === 2000) {
+        criteria = {
+          price: {
+            $gte: parseInt(req.query.price_search),
+          },
+          cpu_brand: {
+            $in: req.query.cpu_brand_name,
+          },
+          gpu_brand: {
+            $in: req.query.gpu_brand_name,
+          },
+        };
+      } else {
+        criteria = {
+          price: {
+            $gte: parseInt(req.query.price_search),
+            $lt: parseInt(req.query.price_search) + 499,
+          },
+          cpu_brand: {
+            $in: req.query.cpu_brand_name,
+          },
+          gpu_brand: {
+            $in: req.query.gpu_brand_name,
+          },
+        };
+      }
+    }
+
     //else all no have, find all without criteria
 
     let mainList = await db
@@ -106,7 +201,7 @@ async function main() {
         parts: 1,
       })
       .toArray();
-    criteria = {}  
+    criteria = {};
     let cpuItem = await db.collection(CPU_COLLECTION).find({}).toArray();
     let gpuItem = await db.collection(GPU_COLLECTION).find({}).toArray();
     res.send({
