@@ -519,7 +519,7 @@ async function main() {
       .find({})
       .project({
         _id: 1,
-        name: 1,
+        product_name: 1,
         image: 1,
       })
       .toArray();
@@ -589,6 +589,7 @@ async function main() {
       let datetime = new Date(); //3/22/2022, 2:34:36 PM
       let votes = 0;
       let cpu_brand = cpuList[0].brand;
+      let gpu_brand = gpuList[0].brand;
       let email = req.body.email;
 
       //client side has id of individual part. pass over to backend fron dropdown list
@@ -599,16 +600,17 @@ async function main() {
         ram_id: ObjectId(req.body.ram),
       };
       await db.collection(BUILD_COLLECTION).insertOne({
-        name,
-        build_ease,
-        image,
-        price,
-        description,
-        datetime,
-        votes,
-        cpu_brand,
-        parts,
-        email,
+        name, //need
+        build_ease, //need
+        image,  //need
+        price,  //no  need
+        description,  //need 
+        datetime, //no need
+        votes, //no need
+        cpu_brand, //no need
+        gpu_brand,//no need
+        parts, // need as an object with id
+        email, // need
       });
       res.status(200);
       res.json({
