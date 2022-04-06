@@ -283,7 +283,7 @@ async function main() {
   });
   //====================BUILD: INDIVIDUAL PAGE COMMENTS SEND==========================//
   //CREATE
-  app.post("/:id/individualbuild/comment", async function (req, res) {
+  app.post("/:id/comment", async function (req, res) {
     try {
       let name = req.body.name;
       let comment = req.body.comment;
@@ -293,11 +293,11 @@ async function main() {
 
       const db = MongoUtil.getDB();
       await db.collection(COMMENTS_COLLECTION).insertOne({
-        name,
-        comment,
-        build_id,
-        email,
-        datetime,
+        name, //need
+        comment, //need
+        build_id, //no need
+        email, //need
+        datetime, //no need
       });
       res.status(200);
       res.json({
@@ -354,7 +354,8 @@ async function main() {
   // if the user as entered correct email via query,
   // confirmation will be send back to client as true
   // else false
-  app.get("/:id/individualbuild/email", async function (req, res) {
+  app.get("/:id/:email/email", async function (req, res) {
+    console.log("activated this route?")
     const db = MongoUtil.getDB();
     //get main details of listing
     let mainList = await db
@@ -366,7 +367,7 @@ async function main() {
         email: 1,
       })
       .toArray();
-    if (mainList[0].email === req.query.email) {
+    if (mainList[0].email === req.params.email) {
       res.send({
         email_check: true,
       });
@@ -378,8 +379,20 @@ async function main() {
   });
   //====================BUILD: INDIVIDUAL PAGE CHANGE(EDIT LISTING)==========================//
   //UPDATE
-  app.put("/:id/individualbuild/edit", async function (req, res) {
+  app.put("/:id/edit", async function (req, res) {
+    
     try {
+      const db = MongoUtil.getDB();
+      let mainList = await db
+        .collection(BUILD_COLLECTION)
+        .find({
+          _id: ObjectId(req.params.id),
+        })
+        .project({
+          datetime: 1,
+          votes: 1
+        })
+        .toArray();
       let cpuList = await db
         .collection(CPU_COLLECTION)
         .find({
@@ -387,7 +400,7 @@ async function main() {
         })
         .project({
           brand: 1,
-          price: 1,
+          price: 1
         })
         .toArray();
 
@@ -397,7 +410,8 @@ async function main() {
           _id: ObjectId(req.body.gpu),
         })
         .project({
-          price: 1,
+          brand: 1,
+          price: 1
         })
         .toArray();
 
@@ -431,24 +445,29 @@ async function main() {
         parseFloat(ramList[0].price);
       let description = req.body.description;
       let cpu_brand = cpuList[0].brand;
+      let gpu_brand = gpuList[0].brand;
+      let datetime = mainList[0].datetime
+      let votes = mainList[0].votes;
       let parts = {
         cpu_id: ObjectId(req.body.cpu),
         gpu_id: ObjectId(req.body.gpu),
         mobo_id: ObjectId(req.body.mobo),
         ram_id: ObjectId(req.body.ram),
       };
-      await db.collection(BUILD_COLLECTION).insertOne({
-        name,
-        build_ease,
-        image,
-        price,
-        description,
-        datetime,
-        votes,
-        cpu_brand,
-        parts,
-        email,
-      });
+      await db.collection(BUILD_COLLECTION).updateOne({
+        _id: ObjectId(req.params.id)
+      },{$set: {
+        name, //need
+        build_ease, //need
+        image, //need
+        price, //no need
+        description, //need
+        datetime, //no need
+        votes, //no need
+        cpu_brand, // no need
+        gpu_brand, // no need
+        parts, // need
+      }});
       res.status(200);
       res.json({
         message: "The record has been edited successfully",
