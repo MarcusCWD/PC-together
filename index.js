@@ -648,29 +648,31 @@ async function main() {
       // no build name or lenth is less than 5 char
       if (!name || name.length < 5) {
         errorFlag = true;
+        console.log("name problem")
       }
-      if (
-        !image ||
-        (!image.includes(".com") &&
-          !(
-            image.includes(".jpg") ||
-            image.includes(".png") ||
-            image.includes(".gif") ||
-            image.includes(".jpeg") ||
-            image.includes(".svg") ||
-            image.includes(".webp") ||
-            image.includes(".bmp")
+      if (!image || 
+        (!image.includes(".com") && 
+        (!image.includes(".jpg") ||
+        !image.includes(".png") ||
+        !image.includes(".gif") ||
+        !image.includes(".jpeg") ||
+        !image.includes(".svg") ||
+        !image.includes(".webp") ||
+        !image.includes(".bmp"))
           ))
-      ) {
+      {
         errorFlag = true;
+        console.log("image problem")
       }
       // no email, no @, no .com
       if (!email || !email.includes("@") || !email.includes(".com")) {
         errorFlag = true;
+        console.log("email problem")
       }
       // description is less than 10 char long
       if (!description || description.length < 10) {
         errorFlag = true;
+        console.log("description problem")
       }
       if (errorFlag === false) {
         await db.collection(BUILD_COLLECTION).insertOne({
