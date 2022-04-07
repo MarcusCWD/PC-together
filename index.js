@@ -291,18 +291,38 @@ async function main() {
       let email = req.body.email;
       let datetime = new Date().toLocaleString(); //3/22/2022, 2:34:36 PM
 
-      const db = MongoUtil.getDB();
-      await db.collection(COMMENTS_COLLECTION).insertOne({
-        name, //need
-        comment, //need
-        build_id, //no need
-        email, //need
-        datetime, //no need
-      });
-      res.status(200);
-      res.json({
-        message: "The record has been added successfully",
-      });
+      let errorFlag = false;
+      // no input name
+      if (!name) {
+        errorFlag = true;
+      }
+      // no email, no @, no .com
+      if (!email || !email.includes("@") || !email.includes(".com")) {
+        errorFlag = true;
+      }
+      // comment is less than 10 char long
+      if (!comment || comment.length < 10) {
+        errorFlag = true;
+      }
+      if (errorFlag === false) {
+        const db = MongoUtil.getDB();
+        await db.collection(COMMENTS_COLLECTION).insertOne({
+          name, //need
+          comment, //need
+          build_id, //no need
+          email, //need
+          datetime, //no need
+        });
+        res.status(200);
+        res.json({
+          message: "The record has been added successfully",
+        });
+      } else {
+        res.status(406);
+        res.json({
+          message: "Invalid submission",
+        });
+      }
     } catch (e) {
       res.status(500);
       res.json({
@@ -313,7 +333,7 @@ async function main() {
   });
   //====================BUILD: INDIVIDUAL PAGE UPVOTE EDIT==========================//
   //UDATE (abit of details)
-  app.patch("/:id/individualbuild/voteup", async function (req, res) {
+  app.patch("/:id/voteup", async function (req, res) {
     try {
       const db = MongoUtil.getDB();
       let upvote = await db
@@ -355,7 +375,7 @@ async function main() {
   // confirmation will be send back to client as true
   // else false
   app.get("/:id/:email/email", async function (req, res) {
-    console.log("activated this route?")
+    console.log("activated this route?");
     const db = MongoUtil.getDB();
     //get main details of listing
     let mainList = await db
@@ -380,7 +400,6 @@ async function main() {
   //====================BUILD: INDIVIDUAL PAGE CHANGE(EDIT LISTING)==========================//
   //UPDATE
   app.put("/:id/edit", async function (req, res) {
-    
     try {
       const db = MongoUtil.getDB();
       let mainList = await db
@@ -390,7 +409,7 @@ async function main() {
         })
         .project({
           datetime: 1,
-          votes: 1
+          votes: 1,
         })
         .toArray();
       let cpuList = await db
@@ -400,7 +419,7 @@ async function main() {
         })
         .project({
           brand: 1,
-          price: 1
+          price: 1,
         })
         .toArray();
 
@@ -411,7 +430,7 @@ async function main() {
         })
         .project({
           brand: 1,
-          price: 1
+          price: 1,
         })
         .toArray();
 
@@ -446,7 +465,7 @@ async function main() {
       let description = req.body.description;
       let cpu_brand = cpuList[0].brand;
       let gpu_brand = gpuList[0].brand;
-      let datetime = mainList[0].datetime
+      let datetime = mainList[0].datetime;
       let votes = mainList[0].votes;
       let parts = {
         cpu_id: ObjectId(req.body.cpu),
@@ -454,20 +473,25 @@ async function main() {
         mobo_id: ObjectId(req.body.mobo),
         ram_id: ObjectId(req.body.ram),
       };
-      await db.collection(BUILD_COLLECTION).updateOne({
-        _id: ObjectId(req.params.id)
-      },{$set: {
-        name, //need
-        build_ease, //need
-        image, //need
-        price, //no need
-        description, //need
-        datetime, //no need
-        votes, //no need
-        cpu_brand, // no need
-        gpu_brand, // no need
-        parts, // need
-      }});
+      await db.collection(BUILD_COLLECTION).updateOne(
+        {
+          _id: ObjectId(req.params.id),
+        },
+        {
+          $set: {
+            name, //need
+            build_ease, //need
+            image, //need
+            price, //no need
+            description, //need
+            datetime, //no need
+            votes, //no need
+            cpu_brand, // no need
+            gpu_brand, // no need
+            parts, // need
+          },
+        }
+      );
       res.status(200);
       res.json({
         message: "The record has been edited successfully",
@@ -482,15 +506,16 @@ async function main() {
   });
   //====================BUILD: INDIVIDUAL PAGE CHANGE(DELETE LISTING)==========================//
   //DESTROY
-  app.delete("/:id/individualbuild/delete", async function (req, res) {
+  app.delete("/:id/delete", async function (req, res) {
+    console.log("hello did delete route activated?");
     await MongoUtil.getDB()
       .collection(BUILD_COLLECTION)
-      .delete({
+      .deleteOne({
         _id: ObjectId(req.params.id),
       });
     await MongoUtil.getDB()
       .collection(COMMENTS_COLLECTION)
-      .delete({
+      .deleteOne({
         build: ObjectId(req.params.id),
       });
     res.status(200);
@@ -618,23 +643,59 @@ async function main() {
         mobo_id: ObjectId(req.body.mobo),
         ram_id: ObjectId(req.body.ram),
       };
-      await db.collection(BUILD_COLLECTION).insertOne({
-        name, //need
-        build_ease, //need
-        image,  //need
-        price,  //no  need
-        description,  //need 
-        datetime, //no need
-        votes, //no need
-        cpu_brand, //no need
-        gpu_brand,//no need
-        parts, // need as an object with id
-        email, // need
-      });
-      res.status(200);
-      res.json({
-        message: "The record has been added successfully",
-      });
+
+      let errorFlag = false;
+      // no build name or lenth is less than 5 char
+      if (!name || name.length < 5) {
+        errorFlag = true;
+      }
+      if (
+        !image ||
+        (!image.includes(".com") &&
+          !(
+            image.includes(".jpg") ||
+            image.includes(".png") ||
+            image.includes(".gif") ||
+            image.includes(".jpeg") ||
+            image.includes(".svg") ||
+            image.includes(".webp") ||
+            image.includes(".bmp")
+          ))
+      ) {
+        errorFlag = true;
+      }
+      // no email, no @, no .com
+      if (!email || !email.includes("@") || !email.includes(".com")) {
+        errorFlag = true;
+      }
+      // description is less than 10 char long
+      if (!description || description.length < 10) {
+        errorFlag = true;
+      }
+      if (errorFlag === false) {
+        await db.collection(BUILD_COLLECTION).insertOne({
+          name, //need
+          build_ease, //need
+          image, //need
+          price, //no  need
+          description, //need
+          datetime, //no need
+          votes, //no need
+          cpu_brand, //no need
+          gpu_brand, //no need
+          parts, // need as an object with id
+          email, // need
+        });
+        res.status(200);
+        res.json({
+          message: "The record has been added successfully",
+        });
+      } else {
+        res.status(406);
+        res.json({
+          message: "Invalid submission",
+        });
+      }
     } catch (e) {
       res.status(500);
       res.json({
