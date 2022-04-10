@@ -453,11 +453,14 @@ async function main() {
       let name = req.body.name;
       let build_ease = req.body.build_ease;
       let image = req.body.image;
-      let price =
-        (parseFloat(cpuList[0].price) +
-        parseFloat(gpuList[0].price) +
-        parseFloat(moboList[0].price) +
-        parseFloat(ramList[0].price)).toFixed(2);
+      let price = parseFloat(
+        (
+          parseFloat(cpuList[0].price) +
+          parseFloat(gpuList[0].price) +
+          parseFloat(moboList[0].price) +
+          parseFloat(ramList[0].price)
+        ).toFixed(2)
+      );
       let description = req.body.description;
       let cpu_brand = cpuList[0].brand;
       let gpu_brand = gpuList[0].brand;
@@ -620,11 +623,12 @@ async function main() {
       let name = req.body.name;
       let build_ease = req.body.build_ease;
       let image = req.body.image;
-      let price =
-  (parseFloat(cpuList[0].price) +
-        parseFloat(gpuList[0].price) +
-        parseFloat(moboList[0].price) +
-        parseFloat(ramList[0].price)).toFixed(2)
+      let price = parseFloat(
+        parseFloat(cpuList[0].price) +
+          parseFloat(gpuList[0].price) +
+          parseFloat(moboList[0].price) +
+          parseFloat(ramList[0].price)
+      ).toFixed(2);
       let description = req.body.description;
       let datetime = new Date(); //3/22/2022, 2:34:36 PM
       let votes = 0;
@@ -645,17 +649,17 @@ async function main() {
       if (!name || name.length < 10) {
         errorFlag = true;
       }
-      if (!image || 
-        (!image.includes(".com") && 
-        (!image.includes(".jpg") ||
-        !image.includes(".png") ||
-        !image.includes(".gif") ||
-        !image.includes(".jpeg") ||
-        !image.includes(".svg") ||
-        !image.includes(".webp") ||
-        !image.includes(".bmp"))
-          ))
-      {
+      if (
+        !image ||
+        (!image.includes(".com") &&
+          (!image.includes(".jpg") ||
+            !image.includes(".png") ||
+            !image.includes(".gif") ||
+            !image.includes(".jpeg") ||
+            !image.includes(".svg") ||
+            !image.includes(".webp") ||
+            !image.includes(".bmp")))
+      ) {
         errorFlag = true;
       }
       // no email, no @, no .com
@@ -700,7 +704,6 @@ async function main() {
   });
 }
 main();
-
 
 //LISTENT
 app.listen(process.env.PORT || 3000, function () {
