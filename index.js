@@ -185,8 +185,6 @@ async function main() {
       }
     }
 
-    //else all no have, find all without criteria
-
     let mainList = await db
       .collection(BUILD_COLLECTION)
       .find(criteria)
@@ -210,7 +208,6 @@ async function main() {
       gpuItem,
     });
   });
-  // axios.get("http://ldkndkfn"+ "/main/brand/ " +this.state.searchBrand)
 
   //====================BUILD: INDIVIDUAL PAGE LOAD==========================//
   //READ
@@ -375,7 +372,6 @@ async function main() {
   // confirmation will be send back to client as true
   // else false
   app.get("/:id/:email/email", async function (req, res) {
-    console.log("activated this route?");
     const db = MongoUtil.getDB();
     //get main details of listing
     let mainList = await db
@@ -507,7 +503,6 @@ async function main() {
   //====================BUILD: INDIVIDUAL PAGE CHANGE(DELETE LISTING)==========================//
   //DESTROY
   app.delete("/:id/delete", async function (req, res) {
-    console.log("hello did delete route activated?");
     await MongoUtil.getDB()
       .collection(BUILD_COLLECTION)
       .deleteOne({
@@ -645,10 +640,9 @@ async function main() {
       };
 
       let errorFlag = false;
-      // no build name or lenth is less than 5 char
-      if (!name || name.length < 5) {
+      // no build name or lenth is less than 10 char
+      if (!name || name.length < 10) {
         errorFlag = true;
-        console.log("name problem")
       }
       if (!image || 
         (!image.includes(".com") && 
@@ -662,17 +656,14 @@ async function main() {
           ))
       {
         errorFlag = true;
-        console.log("image problem")
       }
       // no email, no @, no .com
       if (!email || !email.includes("@") || !email.includes(".com")) {
         errorFlag = true;
-        console.log("email problem")
       }
       // description is less than 10 char long
       if (!description || description.length < 10) {
         errorFlag = true;
-        console.log("description problem")
       }
       if (errorFlag === false) {
         await db.collection(BUILD_COLLECTION).insertOne({
@@ -706,46 +697,10 @@ async function main() {
       console.log(e);
     }
   });
-
-  //====================PARTS: CPU==========================//
-  //READ
-  app.get("/cpu", async function (req, res) {
-    const db = MongoUtil.getDB();
-    let cpuRead = await db.collection(CPU_COLLECTION).find().toArray();
-    res.send({
-      cpuRead,
-    });
-  });
-  //====================PARTS: GPU==========================//
-  //READ
-  app.get("/gpu", async function (req, res) {
-    const db = MongoUtil.getDB();
-    let gpuRead = await db.collection(GPU_COLLECTION).find().toArray();
-    res.send({
-      gpuRead,
-    });
-  });
-  //====================PARTS: MOBO==========================//
-  //READ
-  app.get("/mobo", async function (req, res) {
-    const db = MongoUtil.getDB();
-    let moboRead = await db.collection(MOBO_COLLECTION).find().toArray();
-    res.send({
-      moboRead,
-    });
-  });
-  //====================PARTS: RAM==========================//
-  //READ
-  app.get("/ram", async function (req, res) {
-    const db = MongoUtil.getDB();
-    let ramRead = await db.collection(RAM_COLLECTION).find().toArray();
-    res.send({
-      ramRead,
-    });
-  });
 }
 main();
-// console.log(process.env.DBNAME)
+
+
 //LISTENT
 app.listen(process.env.PORT || 3000, function () {
   console.log("Server has started");
