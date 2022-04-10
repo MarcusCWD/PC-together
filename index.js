@@ -592,6 +592,7 @@ async function main() {
           _id: ObjectId(req.body.gpu),
         })
         .project({
+          brand: 1,
           price: 1,
         })
         .toArray();
